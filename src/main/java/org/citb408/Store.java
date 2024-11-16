@@ -1,6 +1,7 @@
 package org.citb408;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -12,6 +13,7 @@ public class Store {
     private HashMap<Product, Integer> deliveredProducts = null;
     private Inventory inventory = null;
     private List<Receipt> issuedReceipts = null;
+    private List<Delivery> deliveries = null;
 
     public Store(Inventory inventory) {
         this.cashiers = new ArrayList<Cashier>();
@@ -60,18 +62,26 @@ public class Store {
         return sum;
     }
 
-    public BigDecimal calculateDeliveryExpenses() {
+    //todo: maybe fix time complexity; serialize Delivery objects in files by month (in the name of file) and deserialize for expense report
+    //outer loop iterates through list of deliveries and inner one maps through key-value pairs in the products hashmap in Delivery
+    public BigDecimal calculateMonthlyDeliveryExpenses() {
         BigDecimal sum = BigDecimal.ZERO;
-        for (Map.Entry<Product, Integer> entry : deliveredProducts.entrySet()) {
-            Product product = entry.getKey();
-            Integer amount = entry.getValue();
-            sum = sum.add(product.getPriceOnDelivery().multiply(BigDecimal.valueOf(amount)));
+        for (Delivery delivery : deliveries) {
+            if (delivery.getDate().getMonth().equals(LocalDate.now().getMonth()) &&
+                    delivery.getDate().getYear() == LocalDate.now().getYear()) {
+                for (Map.Entry<Product, Integer> entry : delivery.getProducts().entrySet()) {
+                    Product product = entry.getKey();
+                    int quantity = entry.getValue();
+                    BigDecimal productCost = product.getPriceOnDelivery().multiply(BigDecimal.valueOf(quantity));
+                    sum = sum.add(productCost);
+                }
+            }
         }
         return sum;
     }
 
-    @
-    public BigDecimal calculateSales() {
+
+    public BigDecimal calculateMonthlySales() {
 
     }
 

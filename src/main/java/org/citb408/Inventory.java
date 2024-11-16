@@ -53,7 +53,7 @@ public class Inventory {
         return true;
     }
 
-    // dostavna cena + nadcenka
+    // delivery price + markup
     public BigDecimal calculateBasePrice(Product product) {
         return product.getPriceOnDelivery().add(markup.get(product.getCategory()));
     }
@@ -63,7 +63,7 @@ public class Inventory {
         return product.getExpiryDate().isEqual(dateOfPriceDecrease) || product.getExpiryDate().isBefore(dateOfPriceDecrease);
     }
 
-    // bazova cena + otstupka, ako nablijava iztichaneto na sroka na stokata
+    // base price + discount if expiry date is close
     public BigDecimal calculateSellingPrice(Product product) {
         BigDecimal price = calculateBasePrice(product);
         if (isProductApproachingExpiryDate(product)) {

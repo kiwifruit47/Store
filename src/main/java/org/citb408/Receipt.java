@@ -5,6 +5,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.HashMap;
+import java.util.Map;
 
 public class Receipt implements Serializable {
     private static final long serialVersionUID = 1L;
@@ -28,12 +29,21 @@ public class Receipt implements Serializable {
         return receiptId;
     }
 
+    private StringBuilder readProducts() {
+        StringBuilder s = new StringBuilder();
+        for (Map.Entry<Product, Integer> entry : products.entrySet()) {
+            s.append("\n").append("Product: ").append(entry.getKey().getName()).append(" ");
+            s.append("Amount: ").append(entry.getValue());
+        }
+        return s;
+    }
+
     @Override
     public String toString() {
         return "Receipt{" +
-                "cashier=" + cashier +
+                "cashierID=" + cashier.getId() +
                 ", dateAndTimeOfIssuing=" + dateAndTimeOfIssuing +
-                ", products=" + products +
+                ", products=" + readProducts() +
                 ", totalPrice=" + totalPrice +
                 '}';
     }

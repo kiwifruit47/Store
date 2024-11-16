@@ -10,6 +10,7 @@ public class Client {
     private HashMap<Product, Integer> productsInCart;
 
     public Client() {
+        productsInCart = new HashMap<>();
     }
 
     public HashMap<Product, Integer> getProductsInCart() {
@@ -26,4 +27,5 @@ public class Client {
            System.out.println(e.getMessage());
        }
     }
+
 }

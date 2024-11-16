@@ -2,10 +2,11 @@ package org.citb408;
 
 import org.citb408.exceptions.ExpirationDateReachedException;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
-public class Product {
+public class Product implements Serializable {
     private int id;
     private String name;
     private BigDecimal priceOnDelivery;
@@ -17,6 +18,9 @@ public class Product {
         this.priceOnDelivery = priceOnDelivery;
         this.category = category;
         this.expiryDate = expiryDate;
+    }
+
+    private Product() {
     }
 
     public void setName(String name) {

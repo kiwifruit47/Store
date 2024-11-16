@@ -6,22 +6,28 @@ import org.citb408.util.*;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.time.YearMonth;
+import java.util.HashMap;
 import java.util.Map;
 
 public class Register {
     private final int id;
     private Store store;
     private Cashier cashier;
+    private HashMap<YearMonth, BigDecimal> monthlySalesTotal;
     private static int counter = 1;
 
-    public Register() {
+    public Register(Store store) {
+        this.store = store;
         id = counter++;
+        this.monthlySalesTotal = new HashMap<>();
     }
 
     public Register(Cashier cashier, Store store) {
         this.cashier = cashier;
         this.store = store;
-        id = counter++;
+        this.monthlySalesTotal = new HashMap<>();
+        this.id = counter++;
     }
 
     public Cashier getCashier() {
@@ -34,6 +40,10 @@ public class Register {
 
     public Store getStore() {
         return store;
+    }
+
+    public HashMap<YearMonth, BigDecimal> getMonthlySalesTotal() {
+        return monthlySalesTotal;
     }
 
     public void setCashier(Cashier cashier) {
@@ -64,10 +74,9 @@ public class Register {
         } else {
             System.out.println("Payment successful!");
             store.getInventory().removeProductsFromInventory(client.getProductsInCart());
+            monthlySalesTotal.merge(YearMonth.now(), totalPrice, BigDecimal::add);
         }
     }
-
-
 
     public void issueReceipt(Client client, BigDecimal money) {
         try {
@@ -82,6 +91,7 @@ public class Register {
         } catch (InsufficientAmountOfMoneyException | IllegalStateException e) {
             System.out.println(e.getMessage());
         }
+
 
     }
 

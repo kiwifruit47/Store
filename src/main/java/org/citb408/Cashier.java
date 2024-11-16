@@ -1,16 +1,25 @@
 package org.citb408;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
+import java.time.YearMonth;
 
-public class Cashier {
+public class Cashier implements Serializable {
     private final int id;
     private String name;
     private BigDecimal salary;
+    private YearMonth startingMonth;
     private static int counter = 1;
-    public Cashier(String name, BigDecimal salary) {
+
+    public Cashier(String name, BigDecimal salary, YearMonth startingMonth) {
         id = counter++;
         this.name = name;
         this.salary = salary;
+        this.startingMonth = startingMonth;
+    }
+
+    private Cashier() {
+        id = counter++;
     }
 
     public void setName(String name) {
@@ -31,5 +40,9 @@ public class Cashier {
 
     public BigDecimal getSalary() {
         return salary;
+    }
+
+    public YearMonth getStartingMonth() {
+        return startingMonth;
     }
 }

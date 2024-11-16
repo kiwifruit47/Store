@@ -7,13 +7,14 @@ import java.time.LocalDate;
 import java.util.HashMap;
 
 public class Inventory {
-    private HashMap<Product, Integer> availableProducts = null;
+    private HashMap<Product, Integer> availableProducts;
     private HashMap<Category, BigDecimal> markup;
     private int numberOfDaysForPriceDecrease;
     private int priceDecreasePercentage;
 
     public Inventory(HashMap<Category, BigDecimal> markup, int numberOfDaysForPriceDecrease, int priceDecreasePercentage) {
         this.markup = markup;
+        this.availableProducts = new HashMap<>();
         this.numberOfDaysForPriceDecrease = numberOfDaysForPriceDecrease;
         this.priceDecreasePercentage = priceDecreasePercentage;
     }
@@ -56,8 +57,11 @@ public class Inventory {
 
     // delivery price + markup
     public BigDecimal calculateBasePrice(Product product) {
-        return product.getPriceOnDelivery().add(markup.get(product.getCategory()));
+        BigDecimal markupPercentage = markup.get(product.getCategory());
+        BigDecimal markupAmount = product.getPriceOnDelivery().multiply(markupPercentage);
+        return product.getPriceOnDelivery().add(markupAmount);
     }
+
 
     public boolean isProductApproachingExpiryDate(Product product) {
         LocalDate dateOfPriceDecrease = LocalDate.now().minusDays(numberOfDaysForPriceDecrease);

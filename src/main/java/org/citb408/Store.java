@@ -1,26 +1,29 @@
 package org.citb408;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
+import java.time.YearMonth;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class Store {
-    private List<Cashier> cashiers = null;
-    private HashMap<Product, Integer> soldProducts = null;
-    private HashMap<Product, Integer> deliveredProducts = null;
-    private Inventory inventory = null;
-    private List<Receipt> issuedReceipts = null;
-    private List<Delivery> deliveries = null;
+    private List<Cashier> cashiers;
+    private List<Register> registers;
+    private HashMap<Product, Integer> soldProducts;
+    private HashMap<Product, Integer> deliveredProducts;
+    private Inventory inventory;
+    private List<Receipt> issuedReceipts;
+    private List<Delivery> deliveries ;
 
-    public Store(Inventory inventory) {
-        this.cashiers = new ArrayList<Cashier>();
+    public Store(HashMap<Category, BigDecimal> markup, int numberOfDaysForPriceDecrease, int priceDecreasePercentage) {
+        this.cashiers = new ArrayList<>();
+        this.registers = new ArrayList<>();
         this.soldProducts = new HashMap<>();
         this.deliveredProducts = new HashMap<>();
-        this.inventory = inventory;
+        this.inventory = new Inventory(markup, numberOfDaysForPriceDecrease, priceDecreasePercentage);
         this.issuedReceipts = new ArrayList<>();
+        this.deliveries = new ArrayList<>();
     }
 
     public List<Cashier> getCashiers() {
@@ -43,6 +46,14 @@ public class Store {
         return issuedReceipts;
     }
 
+    public List<Register> getRegisters() {
+        return registers;
+    }
+
+    public List<Delivery> getDeliveries() {
+        return deliveries;
+    }
+
     //adds delivered products to deliveredProducts(for reports) and availableProducts in Inventory(for functional purposes)
     public void deliverNewProducts(Product product, int amount) {
         if(deliveredProducts.containsKey(product)) {
@@ -54,21 +65,32 @@ public class Store {
         }
     }
 
-    public BigDecimal calculateMonthlySalaryExpenses() {
+    public void hireNewCashier(String name, BigDecimal salary, YearMonth hireYearMonth) {
+        Cashier cashier = new Cashier(name, salary, hireYearMonth);
+        cashiers.add(cashier);
+    }
+
+    public void addNewRegister() {
+        Register register = new Register(this);
+        registers.add(register);
+    }
+
+    public BigDecimal calculateMonthlySalaryExpenses(YearMonth yearMonth) {
         BigDecimal sum = BigDecimal.ZERO;
         for (Cashier cashier : cashiers) {
-            sum = sum.add(cashier.getSalary());
+            if (cashier.getStartingMonth().equals(yearMonth) || cashier.getStartingMonth().isAfter(yearMonth)) {
+                sum = sum.add(cashier.getSalary());
+            }
         }
         return sum;
     }
 
-    //todo: maybe fix time complexity; serialize Delivery objects in files by month (in the name of file) and deserialize for expense report
     //outer loop iterates through list of deliveries and inner one maps through key-value pairs in the products hashmap in Delivery
-    public BigDecimal calculateMonthlyDeliveryExpenses() {
+    public BigDecimal calculateMonthlyDeliveryExpenses(YearMonth yearMonth) {
         BigDecimal sum = BigDecimal.ZERO;
         for (Delivery delivery : deliveries) {
-            if (delivery.getDate().getMonth().equals(LocalDate.now().getMonth()) &&
-                    delivery.getDate().getYear() == LocalDate.now().getYear()) {
+            if (delivery.getDate().getMonth().equals(yearMonth.getMonth()) &&
+                    delivery.getDate().getYear() == yearMonth.getYear()) {
                 for (Map.Entry<Product, Integer> entry : delivery.getProducts().entrySet()) {
                     Product product = entry.getKey();
                     int quantity = entry.getValue();
@@ -80,12 +102,15 @@ public class Store {
         return sum;
     }
 
-
-    public BigDecimal calculateMonthlySales() {
-
+    public BigDecimal calculateMonthlySales(YearMonth yearMonth) {
+        BigDecimal sum = BigDecimal.ZERO;
+        for (Register register : registers) {
+            sum = sum.add(register.getMonthlySalesTotal().get(yearMonth));
+        }
+        return sum;
     }
 
-    public BigDecimal calculateProfit() {
-
+    public BigDecimal calculateMonthlyProfit(YearMonth yearMonth) {
+        return calculateMonthlySales(yearMonth).subtract(calculateMonthlyDeliveryExpenses(yearMonth).add(calculateMonthlySalaryExpenses(yearMonth)));
     }
 }

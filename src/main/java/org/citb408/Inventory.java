@@ -46,6 +46,7 @@ public class Inventory {
         this.priceDecreasePercentage = priceDecreasePercentage;
     }
 
+
     public boolean isProductAvailable(Product product, int amount) throws InsufficientAmountOfProductException {
         if (availableProducts == null || this.availableProducts.get(product)< amount) {
             throw new InsufficientAmountOfProductException("Insufficient amount of " + product.getName() + ": " + (amount - this.availableProducts.get(product)));
@@ -72,6 +73,16 @@ public class Inventory {
         return price;
     }
 
+    public void removeProductsFromInventory(HashMap<Product, Integer> productsToRemove) {
+        for (HashMap.Entry<Product, Integer> entry : productsToRemove.entrySet()) {
+            Product product = entry.getKey();
+            int amountToRemove = entry.getValue();
+            // Retrieve the current amount from availableProducts
+            int currentAmount = availableProducts.get(product);
+            // Update the amount in availableProducts
+            availableProducts.put(product, currentAmount - amountToRemove);
+        }
+    }
 
 
 }

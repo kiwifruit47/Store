@@ -19,7 +19,7 @@ public class Client {
 
     public void addProductToCart(Store store, Product product, int amount) {
        try {
-           if (store.getInventory().isProductAvailable(product, amount) ||
+           if (store.getInventory().isProductAvailable(product, amount) &&
            !(product.isProductExpired())) {
                productsInCart.put(product, amount);
            }

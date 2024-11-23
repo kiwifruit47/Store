@@ -49,11 +49,22 @@ public class Inventory {
 
 
     public boolean isProductAvailable(Product product, int amount) throws InsufficientAmountOfProductException {
-        if (availableProducts == null || this.availableProducts.get(product)< amount) {
-            throw new InsufficientAmountOfProductException("Insufficient amount of " + product.getName() + ": " + (amount - this.availableProducts.get(product)));
+        if (availableProducts == null) {
+            throw new InsufficientAmountOfProductException("No available products.");
+        }
+        if (!availableProducts.containsKey(product)) {
+            throw new InsufficientAmountOfProductException(
+                    "Insufficient amount of " + product.getName() + ": " + amount
+            );
+        }
+        if (this.availableProducts.get(product) < amount) {
+            throw new InsufficientAmountOfProductException(
+                    "Insufficient amount of " + product.getName() + ": " + (amount - this.availableProducts.get(product))
+            );
         }
         return true;
     }
+
 
     // delivery price + markup
     public BigDecimal calculateBasePrice(Product product) {

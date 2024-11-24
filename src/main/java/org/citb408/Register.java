@@ -1,6 +1,7 @@
 package org.citb408;
 
 import org.citb408.exceptions.InsufficientAmountOfMoneyException;
+import org.citb408.exceptions.ProductNotFoundException;
 import org.citb408.util.*;
 
 import java.io.IOException;
@@ -51,7 +52,11 @@ public class Register {
     }
 
     public BigDecimal calculatePriceForAmount(Product product, int amount) {
-        return store.getInventory().calculateSellingPrice(product).multiply(BigDecimal.valueOf(amount));
+        try{
+            return store.getInventory().calculateSellingPrice(product).multiply(BigDecimal.valueOf(amount));
+        } catch (ProductNotFoundException e) {
+            return BigDecimal.ZERO;
+        }
     }
 
     public BigDecimal calculateTotalPriceForProductsInClientCart (Client client) {

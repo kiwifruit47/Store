@@ -1,6 +1,7 @@
 package org.citb408;
 
 import org.citb408.exceptions.InsufficientAmountOfProductException;
+import org.citb408.exceptions.ProductNotFoundException;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -67,7 +68,10 @@ public class Inventory {
 
 
     // delivery price + markup
-    public BigDecimal calculateBasePrice(Product product) {
+    public BigDecimal calculateBasePrice(Product product) throws ProductNotFoundException {
+        if (availableProducts == null || !availableProducts.containsKey(product)) {
+            throw new ProductNotFoundException("Product not found!");
+        }
         BigDecimal markupPercentage = markup.get(product.getCategory());
         BigDecimal markupAmount = product.getPriceOnDelivery().multiply(markupPercentage);
         return product.getPriceOnDelivery().add(markupAmount);
@@ -76,14 +80,14 @@ public class Inventory {
 
     public boolean isProductApproachingExpiryDate(Product product) {
         LocalDate dateOfPriceDecrease = LocalDate.now().minusDays(numberOfDaysForPriceDecrease);
-        return product.getExpiryDate().isEqual(dateOfPriceDecrease) || product.getExpiryDate().isBefore(dateOfPriceDecrease);
+        return product.getExpiryDate().isEqual(dateOfPriceDecrease) || product.getExpiryDate().isAfter(dateOfPriceDecrease);
     }
 
     // base price + discount if expiry date is close
-    public BigDecimal calculateSellingPrice(Product product) {
+    public BigDecimal calculateSellingPrice(Product product) throws ProductNotFoundException {
         BigDecimal price = calculateBasePrice(product);
         if (isProductApproachingExpiryDate(product)) {
-            price = price.add(price.multiply(BigDecimal.valueOf(priceDecreasePercentage*0.01)));
+            price = price.subtract(price.multiply(BigDecimal.valueOf(priceDecreasePercentage*0.01)));
         }
         return price;
     }

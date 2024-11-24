@@ -46,6 +46,7 @@ public class InventoryTest {
     //tests for calculateBasePrice
     @Test
     void calculateBasePrice_Success() throws ProductNotFoundException {
+        inventoryMock.getAvailableProducts().put(productMock, 10);
         Mockito.when(productMock.getCategory()).thenReturn(Category.FOOD);
         Mockito.when(productMock.getPriceOnDelivery()).thenReturn(BigDecimal.valueOf(5));
         assertEquals(inventoryMock.calculateBasePrice(productMock), BigDecimal.valueOf(5+5*0.1)); //0.1 comes from inventoryMock instance

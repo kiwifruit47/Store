@@ -54,6 +54,7 @@ public class Store {
         return deliveries;
     }
 
+    //todo: da si opravq pomiqta, koqto sum sgotvila s dostavkite - deliverNewProducts() trqbva da suzdava nova instanciq na Delivery, a metoda za razhodite da vzima spisuk s Delivery-ta
     //adds delivered products to deliveredProducts(for reports) and availableProducts in Inventory(for functional purposes)
     public void deliverNewProducts(Product product, int amount) {
         if(deliveredProducts.containsKey(product)) {

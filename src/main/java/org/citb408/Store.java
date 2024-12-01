@@ -1,6 +1,7 @@
 package org.citb408;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.YearMonth;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -11,19 +12,19 @@ public class Store {
     private List<Cashier> cashiers;
     private List<Register> registers;
     private HashMap<Product, Integer> soldProducts;
-    private HashMap<Product, Integer> deliveredProducts;
     private Inventory inventory;
     private List<Receipt> issuedReceipts;
-    private List<Delivery> deliveries ;
+    private Map<Integer, Delivery> deliveries;
+//    counter is for mapping deliveries
+    private int counter = 1;
 
     public Store(HashMap<Category, BigDecimal> markup, int numberOfDaysForPriceDecrease, int priceDecreasePercentage) {
         this.cashiers = new ArrayList<>();
         this.registers = new ArrayList<>();
         this.soldProducts = new HashMap<>();
-        this.deliveredProducts = new HashMap<>();
         this.inventory = new Inventory(markup, numberOfDaysForPriceDecrease, priceDecreasePercentage);
         this.issuedReceipts = new ArrayList<>();
-        this.deliveries = new ArrayList<>();
+        this.deliveries = new HashMap<>();
     }
 
     public List<Cashier> getCashiers() {
@@ -32,10 +33,6 @@ public class Store {
 
     public HashMap<Product, Integer> getSoldProducts() {
         return soldProducts;
-    }
-
-    public HashMap<Product, Integer> getDeliveredProducts() {
-        return deliveredProducts;
     }
 
     public Inventory getInventory() {
@@ -50,20 +47,18 @@ public class Store {
         return registers;
     }
 
-    public List<Delivery> getDeliveries() {
+    public Map<Integer, Delivery> getDeliveries() {
         return deliveries;
     }
 
-    //todo: da si opravq pomiqta, koqto sum sgotvila s dostavkite - deliverNewProducts() trqbva da suzdava nova instanciq na Delivery, a metoda za razhodite da vzima spisuk s Delivery-ta
     //adds delivered products to deliveredProducts(for reports) and availableProducts in Inventory(for functional purposes)
     public void deliverNewProducts(Product product, int amount) {
-        if(deliveredProducts.containsKey(product)) {
-            deliveredProducts.replace(product, deliveredProducts.get(product) + amount);
-            inventory.getAvailableProducts().replace(product, inventory.getAvailableProducts().get(product) + amount);
-        } else {
-            deliveredProducts.put(product, amount);
-            inventory.getAvailableProducts().put(product, amount);
+        if (product == null || amount <= 0) {
+            throw new IllegalArgumentException("Product cannot be null and amount must be positive.");
         }
+        HashMap<Product, Integer> newProducts = new HashMap<>();
+        newProducts.put(product, amount);
+        deliveries.put(counter++, new Delivery(newProducts, LocalDate.now()));
     }
 
     public void hireNewCashier(String name, BigDecimal salary, YearMonth hireYearMonth) {
@@ -86,10 +81,10 @@ public class Store {
         return sum;
     }
 
-    //outer loop iterates through list of deliveries and inner one maps through key-value pairs in the products hashmap in Delivery
+    //outer loop iterates through map of deliveries and inner one maps through key-value pairs in the products hashmap in Delivery
     public BigDecimal calculateMonthlyDeliveryExpenses(YearMonth yearMonth) {
         BigDecimal sum = BigDecimal.ZERO;
-        for (Delivery delivery : deliveries) {
+        for(Delivery delivery : deliveries.values()) {
             if (delivery.getDate().getMonth().equals(yearMonth.getMonth()) &&
                     delivery.getDate().getYear() == yearMonth.getYear()) {
                 for (Map.Entry<Product, Integer> entry : delivery.getProducts().entrySet()) {

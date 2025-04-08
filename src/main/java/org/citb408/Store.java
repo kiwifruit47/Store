@@ -52,7 +52,7 @@ public class Store {
     }
 
     //adds delivered products to deliveries(for reports) and availableProducts in Inventory(for functional purposes)
-    public void deliverNewProducts(Product product, int amount) {
+    public void receiveNewProductsDelivery(Product product, int amount) {
         if (product == null || amount <= 0) {
             throw new IllegalArgumentException("Product cannot be null and amount must be positive.");
         }
@@ -66,14 +66,19 @@ public class Store {
         }
     }
 
-    public void hireNewCashier(String name, BigDecimal salary, YearMonth hireYearMonth) {
+    public Cashier hireNewCashier(String name, BigDecimal salary, YearMonth hireYearMonth) {
+        if (name == null || salary == null || hireYearMonth == null) {
+            throw new IllegalArgumentException("Cashier name and salary cannot be null.");
+        }
         Cashier cashier = new Cashier(name, salary, hireYearMonth);
         cashiers.add(cashier);
+        return cashier;
     }
 
-    public void addNewRegister() {
+    public Register addNewRegister() {
         Register register = new Register(this);
         registers.add(register);
+        return register;
     }
 
     public BigDecimal calculateMonthlySalaryExpenses(YearMonth yearMonth) {

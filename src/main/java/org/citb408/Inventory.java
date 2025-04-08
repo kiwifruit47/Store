@@ -49,7 +49,7 @@ public class Inventory {
     }
 
 
-    public boolean isProductAvailable(Product product, int amount) throws InsufficientAmountOfProductException {
+    public boolean isProductAvailableInInventory(Product product, int amount) throws InsufficientAmountOfProductException {
         if (availableProducts == null) {
             throw new InsufficientAmountOfProductException("No available products.");
         }

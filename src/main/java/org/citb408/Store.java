@@ -51,7 +51,7 @@ public class Store {
         return deliveries;
     }
 
-    //adds delivered products to deliveredProducts(for reports) and availableProducts in Inventory(for functional purposes)
+    //adds delivered products to deliveries(for reports) and availableProducts in Inventory(for functional purposes)
     public void deliverNewProducts(Product product, int amount) {
         if (product == null || amount <= 0) {
             throw new IllegalArgumentException("Product cannot be null and amount must be positive.");
@@ -59,6 +59,11 @@ public class Store {
         HashMap<Product, Integer> newProducts = new HashMap<>();
         newProducts.put(product, amount);
         deliveries.put(counter++, new Delivery(newProducts, LocalDate.now()));
+        if(inventory.getAvailableProducts().containsKey(product)) {
+            inventory.getAvailableProducts().replace(product, inventory.getAvailableProducts().get(product) + amount);
+        } else {
+            inventory.getAvailableProducts().put(product, amount);
+        }
     }
 
     public void hireNewCashier(String name, BigDecimal salary, YearMonth hireYearMonth) {
@@ -74,7 +79,7 @@ public class Store {
     public BigDecimal calculateMonthlySalaryExpenses(YearMonth yearMonth) {
         BigDecimal sum = BigDecimal.ZERO;
         for (Cashier cashier : cashiers) {
-            if (cashier.getStartingMonth().equals(yearMonth) || cashier.getStartingMonth().isAfter(yearMonth)) {
+            if (cashier.getStartingMonth().equals(yearMonth) || cashier.getStartingMonth().isBefore(yearMonth)) {
                 sum = sum.add(cashier.getSalary());
             }
         }
@@ -107,6 +112,8 @@ public class Store {
     }
 
     public BigDecimal calculateMonthlyProfit(YearMonth yearMonth) {
-        return calculateMonthlySales(yearMonth).subtract(calculateMonthlyDeliveryExpenses(yearMonth).add(calculateMonthlySalaryExpenses(yearMonth)));
+        return calculateMonthlySales(yearMonth)
+                .subtract(calculateMonthlyDeliveryExpenses(yearMonth)
+                .add(calculateMonthlySalaryExpenses(yearMonth)));
     }
 }

@@ -17,7 +17,7 @@ public class Cashier implements Serializable {
         this.salary = salary;
         this.startingMonth = startingMonth;
     }
-
+    //private bc store creates(hires) cashiers
     private Cashier() {
         id = counter++;
     }

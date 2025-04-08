@@ -29,18 +29,18 @@ public class InventoryTest {
     @Test
     void isProductAvailable_Available() throws InsufficientAmountOfProductException {
         inventoryMock.getAvailableProducts().put(productMock, 10);
-        assertTrue(inventoryMock.isProductAvailable(productMock, 5));
+        assertTrue(inventoryMock.isProductAvailableInInventory(productMock, 5));
     }
 
     @Test
     void isProductAvailable_NotEnoughQuantity() throws InsufficientAmountOfProductException {
         inventoryMock.getAvailableProducts().put(productMock, 10);
-        assertThrows(InsufficientAmountOfProductException.class, () -> inventoryMock.isProductAvailable(productMock, 15));
+        assertThrows(InsufficientAmountOfProductException.class, () -> inventoryMock.isProductAvailableInInventory(productMock, 15));
     }
 
     @Test
     void isProductAvailable_ProductNotInInventory() throws InsufficientAmountOfProductException {
-        assertThrows(InsufficientAmountOfProductException.class, () -> inventoryMock.isProductAvailable(productMock, 0));
+        assertThrows(InsufficientAmountOfProductException.class, () -> inventoryMock.isProductAvailableInInventory(productMock, 0));
     }
 
     //tests for calculateBasePrice

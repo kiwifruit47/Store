@@ -87,7 +87,7 @@ public class Register {
         try {
             makeSale(client, money);
             Receipt receipt = new Receipt(this.cashier, LocalDateTime.now(), client.getProductsInCart(), calculateTotalPriceForProductsInClientCart(client));
-            System.out.println(receipt);
+//            System.out.println(receipt);
             try {
                 Serializer.serialize("receipts/" + receipt.getReceiptId() + ".ser", receipt);
             } catch (IOException e) {

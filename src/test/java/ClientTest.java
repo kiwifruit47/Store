@@ -25,8 +25,8 @@ public class ClientTest {
     }
 
     @Test
-    void addProductToCart_Success() throws InsufficientAmountOfProductException, ExpirationDateReachedException {
-        when(inventoryMock.isProductAvailable(productMock, 2)).thenReturn(true);
+    void addProductToCartTest_Success() throws InsufficientAmountOfProductException, ExpirationDateReachedException {
+        when(inventoryMock.isProductAvailableInInventory(productMock, 2)).thenReturn(true);
         when(productMock.isProductExpired()).thenReturn(false);
 
         client.addProductToCart(storeMock, productMock, 2);
@@ -36,8 +36,8 @@ public class ClientTest {
     }
 
     @Test
-    void addProductsToCart_ProductExpired() throws InsufficientAmountOfProductException, ExpirationDateReachedException {
-        when(inventoryMock.isProductAvailable(productMock, 2)).thenReturn(true);
+    void addProductsToCartTest_ProductExpired() throws InsufficientAmountOfProductException, ExpirationDateReachedException {
+        when(inventoryMock.isProductAvailableInInventory(productMock, 2)).thenReturn(true);
         when(productMock.isProductExpired()).thenReturn(true);
 
         client.addProductToCart(storeMock, productMock, 2);
@@ -47,8 +47,8 @@ public class ClientTest {
     }
 
     @Test
-    void addProductsToCart_ProductUnavailable() throws InsufficientAmountOfProductException, ExpirationDateReachedException {
-        when(inventoryMock.isProductAvailable(productMock, 2)).thenReturn(false);
+    void addProductsToCartTest_ProductUnavailable() throws InsufficientAmountOfProductException, ExpirationDateReachedException {
+        when(inventoryMock.isProductAvailableInInventory(productMock, 2)).thenReturn(false);
         when(productMock.isProductExpired()).thenReturn(false);
 
         client.addProductToCart(storeMock, productMock, 2);

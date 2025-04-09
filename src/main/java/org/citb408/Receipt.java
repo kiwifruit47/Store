@@ -4,6 +4,8 @@ import java.io.Serial;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.FormatStyle;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -41,9 +43,9 @@ public class Receipt implements Serializable {
     @Override
     public String toString() {
         return "Receipt:" + "\n" +
-                "cashierID=" + cashier.getId() + "\n" +
-                "dateAndTimeOfIssuing=" + dateAndTimeOfIssuing + "\n" +
-                "products" + "\n" + readProducts() + "\n" +
-                "totalPrice=" + totalPrice;
+                "cashierID: " + cashier.getId() + "\n" +
+                "dateAndTimeOfIssuing: " + dateAndTimeOfIssuing.format(DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM, FormatStyle.MEDIUM)) + "\n" +
+                "products" + readProducts() + "\n" +
+                "totalPrice: " + totalPrice;
     }
 }

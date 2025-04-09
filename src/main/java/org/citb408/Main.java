@@ -9,12 +9,12 @@ import java.time.YearMonth;
 import java.util.HashMap;
 
 public class Main {
-    public static void main(String[] args) throws IOException, ClassNotFoundException {
+    public static void main(String[] args) {
         HashMap<Category, BigDecimal> markup1 = new HashMap<>();
         markup1.put(Category.FOOD, new BigDecimal("0.10"));
         markup1.put(Category.MISCELLANEOUS, new BigDecimal("0.20"));
 
-        Product bread = new Product("Dobrudzha bread", new BigDecimal("0.9"), Category.FOOD, LocalDate.of(2026, 1, 12));
+        Product bread = new Product("Dobrudzha bread", new BigDecimal("0.9"), Category.FOOD, LocalDate.of(2024, 1, 12));
         Product chicken = new Product("Chicken", new BigDecimal("4.3"), Category.FOOD, LocalDate.of(2026, 12, 1));
         Product eggs = new Product("Eggs", new BigDecimal("3.8"), Category.FOOD, LocalDate.of(2026, 12, 17));
         Product toothPaste = new Product("SuperFresh", new BigDecimal("5.0"), Category.MISCELLANEOUS, LocalDate.of(2028, 10, 1));
@@ -48,7 +48,11 @@ public class Main {
 
         store1.getRegisters().getFirst().issueReceipt(client1, new BigDecimal("50"));
 
-        Deserializer.deserialize("receipts/");
+        try {
+            Deserializer.deserialize("receipts/receipt_2025-04-09T13:10:58.345995.ser");
+        } catch (IOException | ClassNotFoundException e) {
+            System.out.println(e.getMessage());
+        }
 
 
     }

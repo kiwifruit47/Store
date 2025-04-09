@@ -19,8 +19,8 @@ public class Client {
 
     public void addProductToCart(Store store, Product product, int amount) {
        try {
-           if (store.getInventory().isProductAvailableInInventory(product, amount) &&
-           !(product.isProductExpired())) {
+           if ((store.getInventory().isProductAvailableInInventory(product, amount))
+           && !(product.isProductExpired())) {
                productsInCart.put(product, amount);
            }
        } catch (ExpirationDateReachedException | InsufficientAmountOfProductException e) {

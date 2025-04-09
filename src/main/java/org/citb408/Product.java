@@ -57,7 +57,7 @@ public class Product implements Serializable {
 
     public boolean isProductExpired() throws ExpirationDateReachedException {
         if (expiryDate.isBefore(LocalDate.now())) {
-            throw new ExpirationDateReachedException("Product is expired! Can't be purchased!");
+            throw new ExpirationDateReachedException("Product " + this.name + " is expired! Can't be purchased!");
         }
         return false;
     }

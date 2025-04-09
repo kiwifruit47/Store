@@ -25,9 +25,8 @@ public class ClientTest {
     }
 
     @Test
-    void addProductToCartTest_Success() throws InsufficientAmountOfProductException, ExpirationDateReachedException {
+    void addProductToCartTest_Success() throws InsufficientAmountOfProductException {
         when(inventoryMock.isProductAvailableInInventory(productMock, 2)).thenReturn(true);
-        when(productMock.isProductExpired()).thenReturn(false);
 
         client.addProductToCart(storeMock, productMock, 2);
 
